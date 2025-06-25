@@ -1,14 +1,13 @@
 {
   "name": "pdf-page-counter",
   "version": "1.0.0",
-  "description": "PDF page counter API for Zapier webhook",
-  "type": "commonjs",
+  "description": "PDF page counter API",
+  "type": "module",
   "scripts": {
-    "test": "echo \"No tests yet\"",
-    "dev": "netlify dev"
+    "dev": "node test-local.mjs"
   },
   "dependencies": {
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.3.2",
     "pdf-parse": "^1.1.1"
   },
   "engines": {

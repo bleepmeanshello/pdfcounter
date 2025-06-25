@@ -30,9 +30,16 @@ Test endpoint: `http://localhost:8888/.netlify/functions/count-pdf-pages`
 
 1. Webhook by Zapier → Custom Request
 2. Method: POST
-3. URL: `https://jouw-site.netlify.app/.netlify/functions/count-pdf-pages`
+3. URL: `https://pdfcounter.netlify.app/.netlify/functions/count-pdf-pages`
 4. Data: `{"pdf_url": "{{pdf_url_van_vorige_stap}}"}`
 5. Headers: Content-Type: `application/json`
+
+> **Let op:**
+> - Vervang `{{pdf_url_van_vorige_stap}}` door de variabele uit jouw Zapier-stap die de PDF-link bevat.
+> - Je mag ook `pdfUrl` als key gebruiken, beide werken:
+>   ```json
+>   { "pdfUrl": "https://voorbeeld.nl/bestand.pdf" }
+>   ```
 
 ## Response
 

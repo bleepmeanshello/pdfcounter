@@ -6,7 +6,8 @@ exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Content-Type': 'application/json'
   };
 
   // Handle preflight requests
@@ -23,13 +24,29 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 405,
       headers,
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ 
+        error: 'Method not allowed',
+        message: 'This endpoint only accepts POST requests'
+      })
     };
   }
 
   try {
     // Parse request body
-    const body = JSON.parse(event.body);
+    let body;
+    try {
+      body = JSON.parse(event.body || '{}');
+    } catch (e) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Invalid JSON in request body',
+          message: e.message 
+        })
+      };
+    }
+
     const { pdf_url, pdfUrl } = body;
     
     // Support both pdf_url and pdfUrl for flexibility
@@ -39,22 +56,29 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Missing pdf_url parameter' })
+        body: JSON.stringify({ 
+          error: 'Missing required parameter',
+          message: 'Please provide pdf_url in the request body'
+        })
       };
     }
+
+    console.log('Fetching PDF from:', url);
 
     // Fetch the PDF from the URL
     const response = await fetch(url);
     
     if (!response.ok) {
-      throw new Error(`Failed to fetch PDF: ${response.statusText}`);
+      throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
     }
 
     // Get PDF as buffer
     const pdfBuffer = await response.buffer();
+    console.log('PDF downloaded, size:', pdfBuffer.length, 'bytes');
 
     // Parse PDF to get page count
     const data = await pdf(pdfBuffer);
+    console.log('PDF parsed successfully, pages:', data.numpages);
     
     // Return the page count
     return {
@@ -62,8 +86,9 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({
         pages: data.numpages,
-        pageCount: data.numpages, // Alternative property name
-        success: true
+        pageCount: data.numpages,
+        success: true,
+        pdf_url: url
       })
     };
 
@@ -75,7 +100,8 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({
         error: 'Failed to process PDF',
-        message: error.message
+        message: error.message,
+        success: false
       })
     };
   }

@@ -1,12 +1,19 @@
 [build]
+  command = "npm install"
   functions = "netlify/functions"
+  publish = "."
+
+[build.environment]
+  NODE_VERSION = "18"
 
 [functions]
   node_bundler = "esbuild"
 
 [[headers]]
-  for = "/api/*"
+  for = "/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "POST, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type" 
+    Access-Control-Allow-Headers = "Content-Type"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff" 

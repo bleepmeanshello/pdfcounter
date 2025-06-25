@@ -2,16 +2,16 @@
   "name": "pdf-page-counter",
   "version": "1.0.0",
   "description": "PDF page counter API for Zapier webhook",
-  "main": "index.js",
+  "type": "commonjs",
   "scripts": {
-    "dev": "netlify dev",
-    "build": "echo 'No build needed'"
+    "test": "echo \"No tests yet\"",
+    "dev": "netlify dev"
   },
   "dependencies": {
     "node-fetch": "^2.6.7",
     "pdf-parse": "^1.1.1"
   },
-  "devDependencies": {
-    "netlify-cli": "^15.0.0"
+  "engines": {
+    "node": ">=18.0.0"
   }
 } 
